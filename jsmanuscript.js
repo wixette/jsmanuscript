@@ -18,8 +18,11 @@ const LINE_HEIGHT = 56;
 /**
  * Draws the grid lines.
  */
-function drawGrids(canvasElem, gridColor) {
+function drawGrids(canvasElem, paperColor, gridColor) {
     var ctx = canvasElem.getContext("2d");
+    ctx.fillStyle = paperColor;
+    ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+
     ctx.strokeStyle = gridColor;
     ctx.lineWidth = 1;
 
@@ -160,7 +163,7 @@ function JsManuscriptFormatText(text,
                     '"></canvas>');
             var canvasElem = document.getElementById(canvasId);
             canvasElem.style.backgroundColor = paperColor;
-            drawGrids(canvasElem, gridColor);
+            drawGrids(canvasElem, paperColor, gridColor);
         }
         drawText(lines, fontFamily, textColor);
     }
