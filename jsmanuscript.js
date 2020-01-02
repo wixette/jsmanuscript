@@ -43,6 +43,64 @@ function drawGrids(canvasElem, gridColor) {
 }
 
 /**
+ * Constant variables for text processing.
+ */
+const REPLACE_TABLE = [
+    [/  /g, '\u3000'],
+    [/,/g, '，'],
+    [/\./g, '。'],
+    [/\?/g, '？'],
+    [/!/g, '！'],
+    [/:/g, '：'],
+    [/;/g, '；'],
+    [/\r\n/gm, '\n'],
+    [/\r/gm, '\n'],
+];
+
+/**
+ * Preprocesses the text.
+ */
+function preprocessText(text) {
+    var ret = text;
+    for (let i = 0; i < REPLACE_TABLE.length; i++) {
+        ret = ret.replace(REPLACE_TABLE[i][0], REPLACE_TABLE[i][1]);
+    }
+    return ret;
+}
+
+/**
+ * Counts the lines that the formatted text requires.
+ */
+function countLines(text) {
+    var lineCount = 0;
+    var columnCount = 0;
+    for (let i = 0; i < text.length; i++) {
+        if (text[i] == '\n') {
+            columnCount = 0;
+            lineCount++;
+        } else {
+            columnCount++;
+            if (columnCount >= COLS) {
+                columnCount = 0;
+                lineCount++;
+            }
+        }
+        console.log(text[i], columnCount, lineCount);
+    }
+    if (columnCount > 0) {
+        lineCount++;
+    }
+    return lineCount;
+}
+
+/**
+ * Gets the canvas DOM ID based on the given index.
+ */
+function getCanvasId(canvasIndex) {
+    return 'paper-canvas-' + (canvasIndex + 1);
+}
+
+/**
  * Formats the input text and renders one or more canvases.
  * @param {!string} text The string that contains the input Chinese text.
  * @param {Element} containerElem The container DOM element for
@@ -60,21 +118,27 @@ function JsManuscriptFormatText(text,
                                 textColor = '#000',
                                 paperColor = '#fff',
                                 gridColor = '#3C3') {
+    var processedText = preprocessText(text);
+    var lines = countLines(processedText);
+    var numCanvas = Math.ceil(lines / ROWS);
+
     while (containerElem.firstChild) {
         containerElem.removeChild(containerElem.firstChild);
     }
 
-    var canvasId = 'paper-canvas-1';
-    containerElem.insertAdjacentHTML(
-        'beforeend',
-        '<canvas id="' + canvasId +
-            '" class="paper-canvas" ' +
-            'width="' + CANVAS_WIDTH +
-            '" height="' + CANVAS_HEIGHT +
-            '"></canvas>');
-    var canvasElem = document.getElementById(canvasId);
-    canvasElem.style.backgroundColor = paperColor;
-    drawGrids(canvasElem, gridColor);
+    for (let i = 0; i < numCanvas; i++) {
+        var canvasId = getCanvasId(i);
+        containerElem.insertAdjacentHTML(
+            'beforeend',
+            '<canvas id="' + canvasId +
+                '" class="paper-canvas" ' +
+                'width="' + CANVAS_WIDTH +
+                '" height="' + CANVAS_HEIGHT +
+                '"></canvas>');
+        var canvasElem = document.getElementById(canvasId);
+        canvasElem.style.backgroundColor = paperColor;
+        drawGrids(canvasElem, gridColor);
+    }
 
     return;
 }
