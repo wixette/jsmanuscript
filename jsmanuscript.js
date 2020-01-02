@@ -46,15 +46,8 @@ function drawGrids(canvasElem, gridColor) {
  * Constant variables for text processing.
  */
 const REPLACE_TABLE = [
-    [/  /g, '\u3000'],
-    [/,/g, '，'],
-    [/\./g, '。'],
-    [/\?/g, '？'],
-    [/!/g, '！'],
-    [/:/g, '：'],
-    [/;/g, '；'],
     [/\r\n/gm, '\n'],
-    [/\r/gm, '\n'],
+    [/\r/gm, '\n']
 ];
 
 /**
@@ -69,27 +62,23 @@ function preprocessText(text) {
 }
 
 /**
- * Counts the lines that the formatted text requires.
+ * Parses the text into separated lines. The lines are separated
+ * either by \n or by the limit of characters per line.
  */
-function countLines(text) {
-    var lineCount = 0;
-    var columnCount = 0;
-    for (let i = 0; i < text.length; i++) {
-        if (text[i] == '\n') {
-            columnCount = 0;
-            lineCount++;
+function splitLines(text) {
+    var lines = text.split('\n');
+    var ret = [];
+    for (let i = 0; i < lines.length; i++) {
+        let line = lines[i];
+        if (line.length <= 0) {
+            ret.push('');
         } else {
-            columnCount++;
-            if (columnCount >= COLS) {
-                columnCount = 0;
-                lineCount++;
+            for (let j = 0; j < line.length; j += COLS) {
+                ret.push(line.substr(j, Math.min(COLS, line.length - j)));
             }
         }
     }
-    if (columnCount > 0) {
-        lineCount++;
-    }
-    return lineCount;
+    return ret;
 }
 
 /**
@@ -97,6 +86,42 @@ function countLines(text) {
  */
 function getCanvasId(canvasIndex) {
     return 'paper-canvas-' + (canvasIndex + 1);
+}
+
+/**
+ * Draws a single character onto the canvas.
+ */
+function drawChar(c, canvasElem, fontFamily, textColor, row, col) {
+    var ctx = canvasElem.getContext("2d");
+    ctx.fillStyle = textColor;
+    ctx.font = '20px ' + fontFamily;
+    ctx.textBaseline = "top";
+    ctx.fillText(c,
+                 PADDING + col * GRID_WIDTH + 10,
+                 PADDING + row * LINE_HEIGHT + LINE_HEIGHT - GRID_HEIGHT + 10);
+}
+
+/**
+ * Draws the text onto the canvases.
+ */
+function drawText(lines, fontFamily, textColor) {
+    var canvasIndex = 0;
+    for (let i = 0; i < lines.length; i += ROWS) {
+        var x = getCanvasId(canvasIndex);
+        var canvasElem = document.getElementById(getCanvasId(canvasIndex));
+        for (let row = 0; row < Math.min(ROWS, lines.length - i); row++) {
+            let line = lines[i + row];
+            for (let col = 0; col < line.length; col++) {
+                drawChar(line[col],
+                         canvasElem,
+                         fontFamily,
+                         textColor,
+                         row,
+                         col);
+            }
+        }
+        canvasIndex++;
+    }
 }
 
 /**
@@ -113,31 +138,30 @@ function getCanvasId(canvasIndex) {
  */
 function JsManuscriptFormatText(text,
                                 containerElem,
-                                fontFamily = '',
+                                fontFamily = 'sans-serif',
                                 textColor = '#000',
                                 paperColor = '#fff',
                                 gridColor = '#3C3') {
-    var processedText = preprocessText(text);
-    var lines = countLines(processedText);
-    var numCanvas = Math.ceil(lines / ROWS);
-
     while (containerElem.firstChild) {
         containerElem.removeChild(containerElem.firstChild);
     }
-
-    for (let i = 0; i < numCanvas; i++) {
-        var canvasId = getCanvasId(i);
-        containerElem.insertAdjacentHTML(
-            'beforeend',
-            '<canvas id="' + canvasId +
-                '" class="paper-canvas" ' +
-                'width="' + CANVAS_WIDTH +
-                '" height="' + CANVAS_HEIGHT +
-                '"></canvas>');
-        var canvasElem = document.getElementById(canvasId);
-        canvasElem.style.backgroundColor = paperColor;
-        drawGrids(canvasElem, gridColor);
+    var processedText = preprocessText(text);
+    var lines = splitLines(processedText);
+    if (lines.length >= 0) {
+        var numCanvas = Math.ceil(lines.length / ROWS);
+        for (let i = 0; i < numCanvas; i++) {
+            var canvasId = getCanvasId(i);
+            containerElem.insertAdjacentHTML(
+                'beforeend',
+                '<canvas id="' + canvasId +
+                    '" class="paper-canvas" ' +
+                    'width="' + CANVAS_WIDTH +
+                    '" height="' + CANVAS_HEIGHT +
+                    '"></canvas>');
+            var canvasElem = document.getElementById(canvasId);
+            canvasElem.style.backgroundColor = paperColor;
+            drawGrids(canvasElem, gridColor);
+        }
+        drawText(lines, fontFamily, textColor);
     }
-
-    return;
 }
