@@ -90,3 +90,12 @@ img {
     overflow: auto;
     padding: 30px;
 }
+
+.paper-canvas {
+    background-color: #fff;
+    border: #eee solid 1px;
+    box-shadow: 1px 1px 1px #ccc;
+    height: 1280px;
+    margin: 20px;
+    width: 960px;
+}

@@ -23,5 +23,19 @@ function JsManuscriptFormatText(text,
                                 gridColor = '#3C3') {
     console.log(['Formatting:', text, containerElem, fontFamily,
                  textColor, paperColor, gridColor]);
+
+    while (containerElem.firstChild) {
+        containerElem.removeChild(containerElem.firstChild);
+    }
+
+    var canvasId = 'paper-canvas-1';
+    containerElem.insertAdjacentHTML(
+        'beforeend',
+        '<canvas id="' + canvasId +
+            '" class="paper-canvas" ' +
+            'width="960" height="1280"></canvas>');
+    var canvasElem = document.getElementById(canvasId);
+    canvasElem.style.backgroundColor = paperColor;
+
     return;
 }
