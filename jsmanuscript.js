@@ -85,7 +85,6 @@ function countLines(text) {
                 lineCount++;
             }
         }
-        console.log(text[i], columnCount, lineCount);
     }
     if (columnCount > 0) {
         lineCount++;
