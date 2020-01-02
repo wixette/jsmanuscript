@@ -1,4 +1,92 @@
 body {
-    margin:0;
+    background-color: #eee;
+    border: 0;
     font-family: "PingFang SC", "Lantinghei SC", "Microsoft Yahei", "Hiragino Sans GB", "Segoe UI", Roboto, "Helvetica Neue", Arial,sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+div {
+    border: 0;
+    margin: 0;
+    padding: 0;
+}
+
+img {
+    border: 0;
+    margin: 0;
+    padding: 0;
+}
+
+@media screen and (min-width: 960px) {
+
+#desktop {
+    display: flex;
+    flex-direction: row;
+}
+
+#input-container {
+    display: flex;
+    flex-direction: column;
+}
+
+#paper-container {
+    margin: 20px 20px 20px 0;
+}
+
+}
+
+@media screen and (max-width: 960px) {
+
+#desktop {
+    display: flex;
+    flex-direction: column;
+}
+
+#input-container {
+    display: flex;
+    flex-direction: row;
+}
+
+#text-container {
+    margin-right: 20px;
+}
+
+#paper-container {
+    margin: 20px;
+}
+
+}
+
+#input-container {
+    margin: 20px;
+    text-align: center;
+}
+
+#input-container p {
+    font-size: 14px;
+    line-height: 18px;
+}
+
+#input-container input {
+    background-color: #fcfcfc;
+    border: #ccc solid 1px;
+    font-size: 14px;
+    line-height: 18px;
+}
+
+#input-text {
+    background-color: #fcfcfc;
+    border: #ccc solid 1px;
+    font-size: 14px;
+}
+
+#paper-container {
+    background-color: #fcfcfc;
+    border: #ccc solid 1px;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    overflow: auto;
+    padding: 30px;
 }

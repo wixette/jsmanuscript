@@ -7,9 +7,30 @@
     <link rel="stylesheet" href="style.css">
   </head>
   <body>
-    <div id="paper-container"></div>
+    <div id="desktop">
+      <div id="input-container">
+          <div id="text-container">
+            <p>请输入要排版的文字：</p>
+            <p><textarea rows="20" cols="26" id="input-text"></textarea></p>
+          </div>
+          <div id="option-container">
+            <p>文字字体：<input size="10"></p>
+            <p>文字颜色：<input size="10"></p>
+            <p>纸张颜色：<input size="10"></p>
+            <p>网格颜色：<input size="10"></p>
+            <p><input id="format-button" type="button" value="生成稿纸"></p>
+            <p><input id="print-button" type="button" value="打印稿纸"></p>
+            </p>
+          </div>
+      </div>
+
+      <div id="paper-container">
+      </div>
+    </div>
+
     <script src="jsmanuscript.js"></script>
     <script>
+     document.getElementById('input-text').focus();
      document.addEventListener('DOMContentLoaded', function() {
        JsManuscriptFormatText('abc', document.getElementById('paper-container'));
        });
