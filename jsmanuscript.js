@@ -4,6 +4,45 @@
  */
 
 /**
+ * Constant variables to format the canvas.
+ */
+const CANVAS_WIDTH = 960;
+const CANVAS_HEIGHT = 1280;
+const ROWS = 20;
+const COLS = 20;
+const PADDING = 80;
+const GRID_WIDTH = 40;
+const GRID_HEIGHT = 40;
+const LINE_HEIGHT = 56;
+
+/**
+ * Draws the grid lines.
+ */
+function drawGrids(canvasElem, gridColor) {
+    var ctx = canvasElem.getContext("2d");
+    ctx.strokeStyle = gridColor;
+    ctx.lineWidth = 1;
+
+    for (let i = 0; i < ROWS; i++) {
+        ctx.moveTo(PADDING, PADDING + LINE_HEIGHT * i);
+        ctx.lineTo(CANVAS_WIDTH - PADDING, PADDING + LINE_HEIGHT * i);
+        ctx.moveTo(PADDING,
+                   PADDING + LINE_HEIGHT * i + LINE_HEIGHT - GRID_HEIGHT);
+        ctx.lineTo(CANVAS_WIDTH - PADDING,
+                   PADDING + LINE_HEIGHT * i + LINE_HEIGHT - GRID_HEIGHT);
+        for (let j = 1; j < COLS; j++) {
+            ctx.moveTo(PADDING + j * GRID_WIDTH,
+                       PADDING + LINE_HEIGHT * i + LINE_HEIGHT - GRID_HEIGHT);
+            ctx.lineTo(PADDING + j * GRID_WIDTH,
+                       PADDING + LINE_HEIGHT * i + LINE_HEIGHT);
+        }
+    }
+    ctx.rect(PADDING, PADDING,
+             CANVAS_WIDTH - 2 * PADDING, CANVAS_HEIGHT - 2 * PADDING);
+    ctx.stroke();
+}
+
+/**
  * Formats the input text and renders one or more canvases.
  * @param {!string} text The string that contains the input Chinese text.
  * @param {Element} containerElem The container DOM element for
@@ -21,9 +60,6 @@ function JsManuscriptFormatText(text,
                                 textColor = '#000',
                                 paperColor = '#fff',
                                 gridColor = '#3C3') {
-    console.log(['Formatting:', text, containerElem, fontFamily,
-                 textColor, paperColor, gridColor]);
-
     while (containerElem.firstChild) {
         containerElem.removeChild(containerElem.firstChild);
     }
@@ -33,9 +69,12 @@ function JsManuscriptFormatText(text,
         'beforeend',
         '<canvas id="' + canvasId +
             '" class="paper-canvas" ' +
-            'width="960" height="1280"></canvas>');
+            'width="' + CANVAS_WIDTH +
+            '" height="' + CANVAS_HEIGHT +
+            '"></canvas>');
     var canvasElem = document.getElementById(canvasId);
     canvasElem.style.backgroundColor = paperColor;
+    drawGrids(canvasElem, gridColor);
 
     return;
 }
