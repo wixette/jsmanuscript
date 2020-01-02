@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="zh-CN" id="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>稿纸格式生成器</title>
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body>
+    <div id="paper-container"></div>
+    <script src="jsmanuscript.js"></script>
+    <script>
+     document.addEventListener('DOMContentLoaded', function() {
+       JsManuscriptFormatText('abc', document.getElementById('paper-container'));
+       });
+    </script>
+  </body>
+</html>
