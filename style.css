@@ -102,3 +102,25 @@ img {
     }
 
 }
+
+@media print {
+
+    #input-container {
+        display: none;
+    }
+
+    #paper-container {
+        border: 0;
+        margin: 0;
+        padding: 0;
+    }
+
+    .paper-canvas {
+        border: 0;
+        box-shadow: none;
+        height: 270mm; /* A4 measures 210 × 297 millimeters */
+        margin: 0;
+        page-break-after: always;
+        width: 185mm; /* A4 measures 210 × 297 millimeters */
+    }
+}
