@@ -150,21 +150,22 @@ function JsManuscriptFormatText(text,
     }
     var processedText = preprocessText(text);
     var lines = splitLines(processedText);
-    if (lines.length >= 0) {
-        var numCanvas = Math.ceil(lines.length / ROWS);
-        for (let i = 0; i < numCanvas; i++) {
-            var canvasId = getCanvasId(i);
-            containerElem.insertAdjacentHTML(
-                'beforeend',
-                '<canvas id="' + canvasId +
-                    '" class="paper-canvas" ' +
-                    'width="' + CANVAS_WIDTH +
-                    '" height="' + CANVAS_HEIGHT +
-                    '"></canvas>');
-            var canvasElem = document.getElementById(canvasId);
-            canvasElem.style.backgroundColor = paperColor;
-            drawGrids(canvasElem, paperColor, gridColor);
-        }
-        drawText(lines, fontFamily, textColor);
+    if (lines.length <= 0) {
+        lines = [''];
     }
+    var numCanvas = Math.ceil(lines.length / ROWS);
+    for (let i = 0; i < numCanvas; i++) {
+        var canvasId = getCanvasId(i);
+        containerElem.insertAdjacentHTML(
+            'beforeend',
+            '<canvas id="' + canvasId +
+                '" class="paper-canvas" ' +
+                'width="' + CANVAS_WIDTH +
+                '" height="' + CANVAS_HEIGHT +
+                '"></canvas>');
+        var canvasElem = document.getElementById(canvasId);
+        canvasElem.style.backgroundColor = paperColor;
+        drawGrids(canvasElem, paperColor, gridColor);
+    }
+    drawText(lines, fontFamily, textColor);
 }
