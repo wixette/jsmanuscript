@@ -24,4 +24,4 @@
 
 ## 示例网址
 
-[https://pingpingze.com/jsmanuscript][https://pingpingze.com/jsmanuscript]
+[https://pingpingze.com/jsmanuscript](https://pingpingze.com/jsmanuscript)
