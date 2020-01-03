@@ -14,6 +14,8 @@ const PADDING = 80;
 const GRID_WIDTH = 40;
 const GRID_HEIGHT = 40;
 const LINE_HEIGHT = 56;
+const FOOTER_POSITION = 800;
+const FOOTER_HEIGHT = 40;
 
 /**
  * Draws the grid lines.
@@ -92,6 +94,19 @@ function getCanvasId(canvasIndex) {
 }
 
 /**
+ * Draws a footer line on each canvas.
+ */
+function drawFooter(canvasElem, canvasIndex, numCanvas, fontFamily, textColor) {
+    var ctx = canvasElem.getContext("2d");
+    ctx.fillStyle = textColor;
+    ctx.font = '10px ' + fontFamily;
+    ctx.textBaseline = "top";
+    ctx.fillText('第 ' + (canvasIndex + 1) + ' 页  共 ' + numCanvas + ' 页',
+                 FOOTER_POSITION,
+                 CANVAS_HEIGHT - FOOTER_HEIGHT);
+}
+
+/**
  * Draws a single character onto the canvas.
  */
 function drawChar(c, canvasElem, fontFamily, textColor, row, col) {
@@ -166,6 +181,7 @@ function JsManuscriptFormatText(text,
         var canvasElem = document.getElementById(canvasId);
         canvasElem.style.backgroundColor = paperColor;
         drawGrids(canvasElem, paperColor, gridColor);
+        drawFooter(canvasElem, i, numCanvas, fontFamily, textColor);
     }
     drawText(lines, fontFamily, textColor);
 }
