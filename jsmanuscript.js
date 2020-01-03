@@ -168,6 +168,9 @@ function JsManuscriptFormatText(text,
     if (lines.length <= 0) {
         lines = [''];
     }
+    fontFamily = fontFamily.trim();
+    if (fontFamily === '')
+        fontFamily = 'sans-serif';
     var numCanvas = Math.ceil(lines.length / ROWS);
     for (let i = 0; i < numCanvas; i++) {
         var canvasId = getCanvasId(i);
