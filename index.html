@@ -3,26 +3,26 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>稿纸格式生成器</title>
+    <title>中文一键转稿纸格式</title>
     <link rel="stylesheet" href="style.css">
   </head>
   <body>
     <div id="desktop">
       <div id="input-container">
-          <div id="text-container">
-            <p>请输入要排版的文字：</p>
-            <p><textarea rows="20" cols="26" id="input-text"></textarea></p>
+        <div id="text-container">
+          <p>中文一键转稿纸格式&nbsp;<a href="https://github.com/wixette/jsmanuscript">源代码</a></p>
+          <p><textarea rows="20" cols="26" id="input-text" placeholder="请输入要排版的文字"></textarea></p>
+        </div>
+        <div id="option-container">
+          <p>字体：<input id="font-family" size="10" value="sans-serif"></p>
+          <p>文字颜色：<input id="text-color" type="color" value="#000000"></p>
+          <p>纸张颜色：<input id="paper-color" type="color" value="#ffffff"></p>
+          <p>网格颜色：<input id="grid-color" type="color" value="#33cc33"></p>
+          <div id="button-container">
+            <div><input id="format-button" type="button" value="生成稿纸"></div>
+            <div><input id="print-button" type="button" value="打印稿纸"></div>
           </div>
-          <div id="option-container">
-            <p>字体：<input id="font-family" size="10" value="sans-serif"></p>
-            <p>文字颜色：<input id="text-color" type="color" value="#000000"></p>
-            <p>纸张颜色：<input id="paper-color" type="color" value="#ffffff"></p>
-            <p>网格颜色：<input id="grid-color" type="color" value="#33cc33"></p>
-            <div id="button-container">
-              <div><input id="format-button" type="button" value="生成稿纸"></div>
-              <div><input id="print-button" type="button" value="打印稿纸"></div>
-            </div>
-          </div>
+        </div>
       </div>
 
       <div id="paper-container">
