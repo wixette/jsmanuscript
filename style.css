@@ -70,6 +70,12 @@ img {
     padding: 30px;
 }
 
+#footer {
+    margin-top: 30px;
+    color: #666;
+    font-size: 11px;
+}
+
 .paper-canvas {
     background-color: #fff;
     border: #eee solid 1px;
