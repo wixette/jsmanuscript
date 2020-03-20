@@ -15,141 +15,135 @@
  */
 
 body {
-    background-color: #eee;
     border: 0;
     font-family: "PingFang SC", "Lantinghei SC", "Microsoft Yahei", "Hiragino Sans GB", "Segoe UI", Roboto, "Helvetica Neue", Arial,sans-serif;
-    margin: 0;
+    font-size: 14px;
+    margin: 10px;
     padding: 0;
 }
 
-div {
+div, img {
     border: 0;
     margin: 0;
     padding: 0;
 }
 
-img {
-    border: 0;
+#container {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+}
+
+#header {
+    border: #57c 1px solid;
+    box-shadow: 1px 1px 3px #ccc;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+#titlebar {
+    align-items: center;
+    background-color: #57c;
+    color: #eef;
+    display: flex;
+    flex-direction: row;
+    font-size: 20px;
+    height: 40px;
+    justify-content: center;
+    line-height: 30px;
+}
+
+#titlebar a {
+    font-size: 14px;
+    margin-left: 30px;
+    text-decoration: none;
+}
+
+#titlebar a:link {
+    color: #eef;
+}
+#titlebar a:visited {
+    color: #eef;
+}
+#titlebar a:hover {
+    color: #f80;
+}
+#titlebar a:active {
+    color: #f80;
+}
+
+#controls {
+    align-items: center;
+    align-content: center;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-around;
+}
+
+#controls input, #controls select {
+    background-color: #fff;
+    border: #abf 1px solid;
+    border-radius: 4px;
+    box-shadow: 0 0 2px #ccc;
+    box-sizing: border-box;
+    font-size: 14px;
+    height: 28px;
+    line-height: 28px;
+    margin: 0 8px 0 8px;
+    padding: 0 8px 0 8px;
+}
+
+.control-box {
+    align-items: center;
+    align-content: center;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: center;
+    margin: 8px;
+}
+
+#text-container {
+    margin: 20px 0 20px 0;
+    width: 100%;
+}
+
+#text-container textarea {
+    border: #57c 1px solid;
+    box-shadow: 1px 1px 3px #ccc;
+    box-sizing: border-box;
+    font-size: 14px;
+    height: 600px;
+    line-height: 28px;
     margin: 0;
-    padding: 0;
-}
-
-#input-container {
-    margin: 20px;
-}
-
-#input-container p {
-    font-size: 14px;
-    line-height: 18px;
-}
-
-#input-container input {
-    background-color: #fcfcfc;
-    border: #ccc solid 1px;
-    font-size: 14px;
-}
-
-#input-text {
-    background-color: #fcfcfc;
-    border: #ccc solid 1px;
-    font-size: 14px;
-}
-
-#option-container {
-    text-align: center;
-}
-
-#button-container {
-    text-align: center;
+    padding: 10px;
+    resize: none;
+    width: 100%;
 }
 
 #paper-container {
-    background-color: #fcfcfc;
-    border: #ccc solid 1px;
-    overflow: auto;
-    padding: 30px;
+    display: none;
+    margin: 20px 0 20px 0;
+    width: 100%;
 }
 
 #footer {
-    margin-top: 30px;
     color: #666;
-    font-size: 11px;
-}
-
-.paper-canvas {
-    background-color: #fff;
-    border: #eee solid 1px;
-    box-shadow: 1px 1px 1px #ccc;
-    height: 1280px;
-    margin: 20px;
-    width: 960px;
+    line-height: 30px;
+    text-align: center;
+    text-size: 11px;
 }
 
 @media screen and (min-width: 768px) {
-    #desktop {
-        display: flex;
-        flex-direction: row;
-    }
-
-    #input-container {
-        display: flex;
-        flex-direction: column;
-    }
-
-    #button-container {
-        display: flex;
-        flex-direction: row;
-    }
-
-    #button-container > div {
-        flex: auto;
-    }
-
-    #paper-container {
-        display: flex;
-        flex-direction: column;
-        flex-grow: 1;
-        margin: 20px 20px 20px 0;
-    }
 }
 
 @media screen and (max-width: 767px) {
-    #desktop {
-        display: flex;
-        flex-direction: column;
-    }
-
-    #input-container {
-        align-items: center;
-        display: flex;
-        flex-direction: row;
-    }
-
-    #text-container {
-        margin-right: 20px;
-    }
-
-    #button-container {
-        display: flex;
-        flex-direction: column;
-        height: 90px;
-        margin-top: 30px;
-    }
-
-    #button-container > div {
-        flex: auto;
-    }
-
-    #paper-container {
-        display: flex;
-        flex-direction: column;
-        flex-grow: 1;
-        margin: 20px;
-    }
 }
 
 @media print {
-    #input-container {
+    #header, #text-container {
         display: none;
     }
 
