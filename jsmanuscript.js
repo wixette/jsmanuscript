@@ -31,6 +31,7 @@ jsm.GRID_WIDTH = 80;
 jsm.GRID_HEIGHT = 80;
 jsm.LINE_STROKE = 2;
 jsm.FONT_SIZE = '50px';
+jsm.GRID_LEFT_PADDING = 15;
 jsm.LINE_HEIGHT = 112;
 jsm.FOOTER_POSITION = 1600;
 jsm.FOOTER_HEIGHT = 80;
@@ -280,11 +281,11 @@ jsm.drawChar = function (c, canvasElem, fontFamily, textColor, row, col) {
     var ctx = canvasElem.getContext("2d");
     ctx.fillStyle = textColor;
     ctx.font = jsm.FONT_SIZE + ' '+ fontFamily;
-    ctx.textBaseline = "top";
+    ctx.textBaseline = "middle";
     ctx.fillText(c,
-                 jsm.PADDING + col * jsm.GRID_WIDTH + 10,
+                 jsm.PADDING + col * jsm.GRID_WIDTH + jsm.GRID_LEFT_PADDING,
                  jsm.PADDING + row * jsm.LINE_HEIGHT +
-                 jsm.LINE_HEIGHT - jsm.GRID_HEIGHT + 10);
+                 jsm.LINE_HEIGHT - jsm.GRID_HEIGHT / 2);
 };
 
 /**
