@@ -37,6 +37,8 @@ jsm.FOOTER_POSITION = 1600;
 jsm.FOOTER_HEIGHT = 80;
 jsm.FOOTER_FONT_SIZE = '30px';
 
+jsm.DEFAULT_FONT = "sans-serif";
+
 /**
  * Candidate list of font familiy and display name.
  */
@@ -377,7 +379,9 @@ jsm.formatText = function (text,
 jsm.format = function () {
     var text = document.getElementById('input-text').value;
     var fontIndex = parseInt(document.getElementById('font-select').value);
-    var fontFamily = jsm.FONTS[fontIndex].family;
+    var fontFamily = isNaN(fontIndex) ?
+        jsm.DEFAULT_FONT :
+        jsm.FONTS[fontIndex].family;
     var textColor = document.getElementById('text-color').value;
     var paperColor = document.getElementById('paper-color').value;
     var gridColor = document.getElementById('grid-color').value;
