@@ -42,10 +42,6 @@ jsm.FOOTER_FONT_SIZE = '30px';
  */
 jsm.FONTS = [
     {
-        family: 'ST Kaiti',
-        name: '华文楷体',
-    },
-    {
         family: 'STKaiti',
         name: '华文楷体',
     },
@@ -66,10 +62,6 @@ jsm.FONTS = [
         name: '华康标楷',
     },
     {
-        family: 'ST Song',
-        name: '华文宋体',
-    },
-    {
         family: 'STSong',
         name: '华文宋体',
     },
@@ -83,6 +75,10 @@ jsm.FONTS = [
     },
     {
         family: 'SimSun',
+        name: '宋体',
+    },
+    {
+        family: 'NSimSun',
         name: '新宋体',
     },
     {
@@ -100,10 +96,6 @@ jsm.FONTS = [
     {
         family: 'Hei',
         name: '黑体',
-    },
-    {
-        family: 'ST Heiti',
-        name: '华文黑体',
     },
     {
         family: 'STHeiti',
@@ -134,6 +126,10 @@ jsm.FONTS = [
         name: 'Noto黑体简',
     },
     {
+        family: 'STXihei',
+        name: '华文细黑',
+    },
+    {
         family: 'FangSong',
         name: '仿宋',
     },
@@ -142,7 +138,7 @@ jsm.FONTS = [
         name: '仿宋',
     },
     {
-        family: 'ST FangSong',
+        family: 'STFangSong',
         name: '华文仿宋',
     },
     {
@@ -154,8 +150,28 @@ jsm.FONTS = [
         name: '行楷简体',
     },
     {
+        family: 'STXingkai',
+        name: '华文行楷',
+    },
+    {
+        family: 'LiSu',
+        name: '隶书',
+    },
+    {
+        family: 'STLiti',
+        name: '华文隶书',
+    },
+    {
+        family: 'YouYuan',
+        name: '幼圆',
+    },
+    {
         family: 'Weibei SC',
         name: '魏碑简体',
+    },
+    {
+        family: 'STXinwei',
+        name: '华文新魏',
     },
     {
         family: 'Yuppy SC',
