@@ -4,19 +4,21 @@
 
 将输入的中文转换成 20x20 的稿纸格式：
 
-![示例](https://raw.githubusercontent.com/wixette/jsmanuscript/master/samples/sample00.png)
+<img src="https://raw.githubusercontent.com/wixette/jsmanuscript/master/samples/sample00.png" width="800">
 
-可以按照稿纸的分页打印输出，或打印成 PDF 文件（Chrome 等浏览器在稿纸上打开右键菜单还可以转存 PNG 文件）：
+可以按照稿纸的分页打印输出，或打印成 PDF 文件：
 
-![示例](https://raw.githubusercontent.com/wixette/jsmanuscript/master/samples/sample01.png)
+<img src="https://raw.githubusercontent.com/wixette/jsmanuscript/master/samples/sample01.png" width="800">
+
+可以将每一页生成的稿纸图片输出并转存成 PNG 格式的文件（一些浏览器下载文件后的文件名需要手工修改并添加 .png 后缀。
 
 可以改变字体，文字颜色，纸张颜色，格线颜色：
 
-![示例](https://raw.githubusercontent.com/wixette/jsmanuscript/master/samples/sample02.png)
+<img src="https://raw.githubusercontent.com/wixette/jsmanuscript/master/samples/sample02.png" width="800">
 
 甚至较大胆的配色：
 
-![示例](https://raw.githubusercontent.com/wixette/jsmanuscript/master/samples/sample03.png)
+<img src="https://raw.githubusercontent.com/wixette/jsmanuscript/master/samples/sample03.png" width="800">
 
 ## 安装和使用
 
