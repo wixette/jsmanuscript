@@ -142,15 +142,22 @@ div, img {
     text-size: 11px;
 }
 
-@media screen and (min-width: 768px) {
-}
-
-@media screen and (max-width: 767px) {
-}
-
 @media print {
-    #header, #text-container {
+    #header, #text-container, #footer {
         display: none;
+    }
+
+    body {
+        border: 0;
+        margin: 0;
+        padding: 0;
+    }
+
+    container {
+        border: 0;
+        display: block;
+        margin: 0;
+        padding: 0;
     }
 
     #paper-container {
@@ -159,12 +166,16 @@ div, img {
         padding: 0;
     }
 
+    /*
+       A4 measures 210 × 297 millimeters
+       Letter paper measures 215.9 x 279.4 mm
+     */
     .paper-canvas {
         border: 0;
         box-shadow: none;
-        height: 270mm; /* A4 measures 210 × 297 millimeters */
-        margin: 0;
+        height: 280mm;
+        margin: 10mm;
         page-break-after: always;
-        width: 185mm; /* A4 measures 210 × 297 millimeters */
+        width: 210mm; /* A4 measures 210 × 297 millimeters */
     }
 }
