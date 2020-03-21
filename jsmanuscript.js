@@ -480,16 +480,33 @@ jsm.updateElements = function () {
     }
 };
 
+/**
+ * Switches back from the grid mode to the input mode.
+ */
 jsm.switchToInput = function () {
     jsm.isEditing = true;
     jsm.updateElements();
 };
 
+/**
+ * Prints the canvases as A4 pages.
+ */
 jsm.print = function () {
     window.print();
 };
 
+/**
+ * Exports a specified canvas to png file.
+ */
 jsm.export = function () {
+    var pageIndex = parseInt(document.getElementById('page-select').value);
+    if (!isNaN(pageIndex)) {
+        var canvasId = jsm.getCanvasId(pageIndex);
+        var canvasElem = document.getElementById(canvasId);
+        canvasElem.toBlob(function(blob) {
+            saveAs(blob, 'page_' + (pageIndex + 1) + '.png');
+        }, 'image/png');
+    }
 };
 
 /**
