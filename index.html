@@ -34,10 +34,10 @@
           <div class="control-box"><div>文字颜色</div><input id="text-color" type="color" value="#000000"></div>
           <div class="control-box"><div>纸张颜色</div><input id="paper-color" type="color" value="#ffffff"></div>
           <div class="control-box"><div>网格颜色</div><input id="grid-color" type="color" value="#33cc33"></div>
-          <div class="control-box"><input id="btn-input" type="button" value="输入文字"></div>
           <div class="control-box"><input id="btn-format" type="button" value="生成稿纸"></div>
+          <div class="control-box"><input id="btn-input" type="button" value="编辑文字"></div>
           <div class="control-box"><input id="btn-print" type="button" value="打印稿纸"></div>
-          <div class="control-box"><div>第</div><select id="page-select"></select><div>页</div><input id="btn-print" type="button" value="导出图片"></div>
+          <div class="control-box"><div>第</div><select id="page-select"></select><div>页</div><input id="btn-export" type="button" value="导出图片"></div>
         </div>
       </div>
 
@@ -54,25 +54,16 @@
 
     </div>
 
+    <script src="font_detect.js"></script>
     <script src="jsmanuscript.js"></script>
     <script>
-     document.getElementById('input-text').focus();
-     document.getElementById('btn-format').addEventListener('click', function() {
-       var text = document.getElementById('input-text').value;
-       var fontFamily = document.getElementById('font-family').value;
-       var textColor = document.getElementById('text-color').value;
-       var paperColor = document.getElementById('paper-color').value;
-       var gridColor = document.getElementById('grid-color').value;
-       JsManuscriptFormatText(text,
-                              document.getElementById('paper-container'),
-                              fontFamily,
-                              textColor,
-                              paperColor,
-                              gridColor);
-     });
-     document.getElementById('btn-print').addEventListener('click', function() {
-       window.print();
-     });
+     (function() {
+       if (document.readyState !== 'loading') {
+         jsm.init();
+       } else {
+         document.addEventListener('DOMContentLoaded', jsm.init);
+       }
+     })();
     </script>
   </body>
 </html>

@@ -17,54 +17,203 @@
  * for Chinese document.
  */
 
+var jsm = jsm || {};
+
 /**
  * Constant variables to format the canvas.
  */
-const CANVAS_WIDTH = 960;
-const CANVAS_HEIGHT = 1280;
-const ROWS = 20;
-const COLS = 20;
-const PADDING = 80;
-const GRID_WIDTH = 40;
-const GRID_HEIGHT = 40;
-const LINE_HEIGHT = 56;
-const FOOTER_POSITION = 800;
-const FOOTER_HEIGHT = 40;
+jsm.CANVAS_WIDTH = 960;
+jsm.CANVAS_HEIGHT = 1280;
+jsm.ROWS = 20;
+jsm.COLS = 20;
+jsm.PADDING = 80;
+jsm.GRID_WIDTH = 40;
+jsm.GRID_HEIGHT = 40;
+jsm.LINE_HEIGHT = 56;
+jsm.FOOTER_POSITION = 800;
+jsm.FOOTER_HEIGHT = 40;
+
+/**
+ * Candidate list of font familiy and display name.
+ */
+jsm.FONTS = [
+    {
+        family: 'ST Kaiti',
+        name: '华文楷体',
+    },
+    {
+        family: 'STKaiti',
+        name: '华文楷体',
+    },
+    {
+        family: 'BiauKai',
+        name: '标楷体',
+    },
+    {
+        family: 'Kai',
+        name: '楷体',
+    },
+    {
+        family: 'KaiTi',
+        name: '楷体',
+    },
+    {
+        family: 'DFKai-SB',
+        name: '华康标楷',
+    },
+    {
+        family: 'ST Song',
+        name: '华文宋体',
+    },
+    {
+        family: 'STSong',
+        name: '华文宋体',
+    },
+    {
+        family: 'Songti SC',
+        name: '宋体简体',
+    },
+    {
+        family: 'Song',
+        name: '宋体',
+    },
+    {
+        family: 'SimSun',
+        name: '新宋体',
+    },
+    {
+        family: 'LiSong Pro',
+        name: '俪宋',
+    },
+    {
+        family: 'PMingLiU',
+        name: '细明体',
+    },
+    {
+        family: 'PingFang SC',
+        name: '平方简体',
+    },
+    {
+        family: 'Hei',
+        name: '黑体',
+    },
+    {
+        family: 'ST Heiti',
+        name: '华文黑体',
+    },
+    {
+        family: 'STHeiti',
+        name: '华文黑体',
+    },
+    {
+        family: 'Heiti SC',
+        name: '黑体简体',
+    },
+    {
+        family: 'LiHei Pro',
+        name: '俪黑',
+    },
+    {
+        family: 'Microsoft JhengHei',
+        name: '微软正黑',
+    },
+    {
+        family: 'Microsoft YaHei',
+        name: '微软雅黑',
+    },
+    {
+        family: 'SimHei',
+        name: '新黑体',
+    },
+    {
+        family: 'Noto Sans CJK SC',
+        name: 'Noto黑体简',
+    },
+    {
+        family: 'FangSong',
+        name: '仿宋',
+    },
+    {
+        family: 'Fang Song',
+        name: '仿宋',
+    },
+    {
+        family: 'ST FangSong',
+        name: '华文仿宋',
+    },
+    {
+        family: 'Yuanti SC',
+        name: '圆体简体',
+    },
+    {
+        family: 'Xingkai SC',
+        name: '行楷简体',
+    },
+    {
+        family: 'Weibei SC',
+        name: '魏碑简体',
+    },
+    {
+        family: 'Yuppy SC',
+        name: '雅痞简体',
+    },
+    {
+        family: 'Wawati SC',
+        name: '娃娃体简体',
+    },
+];
+
+/**
+ * Whether the current window is in text editing status.
+ * @type {boolean}
+ */
+jsm.isEditing = false;
+
+/**
+ * Number of canvas that are generated (pages).
+ * @type {nubmer}
+ */
+jsm.numCanvas = 0;
 
 /**
  * Draws the grid lines.
  */
-function drawGrids(canvasElem, paperColor, gridColor) {
+jsm.drawGrids = function(canvasElem, paperColor, gridColor) {
     var ctx = canvasElem.getContext("2d");
     ctx.fillStyle = paperColor;
-    ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+    ctx.fillRect(0, 0, jsm.CANVAS_WIDTH, jsm.CANVAS_HEIGHT);
 
     ctx.strokeStyle = gridColor;
     ctx.lineWidth = 1;
 
-    for (let i = 0; i < ROWS; i++) {
-        ctx.moveTo(PADDING, PADDING + LINE_HEIGHT * i);
-        ctx.lineTo(CANVAS_WIDTH - PADDING, PADDING + LINE_HEIGHT * i);
-        ctx.moveTo(PADDING,
-                   PADDING + LINE_HEIGHT * i + LINE_HEIGHT - GRID_HEIGHT);
-        ctx.lineTo(CANVAS_WIDTH - PADDING,
-                   PADDING + LINE_HEIGHT * i + LINE_HEIGHT - GRID_HEIGHT);
-        for (let j = 1; j < COLS; j++) {
-            ctx.moveTo(PADDING + j * GRID_WIDTH,
-                       PADDING + LINE_HEIGHT * i + LINE_HEIGHT - GRID_HEIGHT);
-            ctx.lineTo(PADDING + j * GRID_WIDTH,
-                       PADDING + LINE_HEIGHT * i + LINE_HEIGHT);
+    for (let i = 0; i < jsm.ROWS; i++) {
+        ctx.moveTo(jsm.PADDING, jsm.PADDING + jsm.LINE_HEIGHT * i);
+        ctx.lineTo(jsm.CANVAS_WIDTH - jsm.PADDING,
+                   jsm.PADDING + jsm.LINE_HEIGHT * i);
+        ctx.moveTo(jsm.PADDING,
+                   jsm.PADDING + jsm.LINE_HEIGHT * i +
+                   jsm.LINE_HEIGHT - jsm.GRID_HEIGHT);
+        ctx.lineTo(jsm.CANVAS_WIDTH - jsm.PADDING,
+                   jsm.PADDING + jsm.LINE_HEIGHT * i +
+                   jsm.LINE_HEIGHT - jsm.GRID_HEIGHT);
+        for (let j = 1; j < jsm.COLS; j++) {
+            ctx.moveTo(jsm.PADDING + j * jsm.GRID_WIDTH,
+                       jsm.PADDING + jsm.LINE_HEIGHT * i +
+                       jsm.LINE_HEIGHT - jsm.GRID_HEIGHT);
+            ctx.lineTo(jsm.PADDING + j * jsm.GRID_WIDTH,
+                       jsm.PADDING + jsm.LINE_HEIGHT * i + jsm.LINE_HEIGHT);
         }
     }
-    ctx.rect(PADDING, PADDING,
-             CANVAS_WIDTH - 2 * PADDING, CANVAS_HEIGHT - 2 * PADDING);
+    ctx.rect(jsm.PADDING, jsm.PADDING,
+             jsm.CANVAS_WIDTH - 2 * jsm.PADDING,
+             jsm.CANVAS_HEIGHT - 2 * jsm.PADDING);
     ctx.stroke();
-}
+};
 
 /**
  * Constant variables for text processing.
  */
-const REPLACE_TABLE = [
+jsm.REPLACE_TABLE = [
     [/\r\n/gm, '\n'],
     [/\r/gm, '\n']
 ];
@@ -72,19 +221,19 @@ const REPLACE_TABLE = [
 /**
  * Preprocesses the text.
  */
-function preprocessText(text) {
+jsm.preprocessText = function (text) {
     var ret = text;
-    for (let i = 0; i < REPLACE_TABLE.length; i++) {
-        ret = ret.replace(REPLACE_TABLE[i][0], REPLACE_TABLE[i][1]);
+    for (let i = 0; i < jsm.REPLACE_TABLE.length; i++) {
+        ret = ret.replace(jsm.REPLACE_TABLE[i][0], jsm.REPLACE_TABLE[i][1]);
     }
     return ret;
-}
+};
 
 /**
  * Parses the text into separated lines. The lines are separated
  * either by \n or by the limit of characters per line.
  */
-function splitLines(text) {
+jsm.splitLines = function (text) {
     var lines = text.split('\n');
     var ret = [];
     for (let i = 0; i < lines.length; i++) {
@@ -92,69 +241,71 @@ function splitLines(text) {
         if (line.length <= 0) {
             ret.push('');
         } else {
-            for (let j = 0; j < line.length; j += COLS) {
-                ret.push(line.substr(j, Math.min(COLS, line.length - j)));
+            for (let j = 0; j < line.length; j += jsm.COLS) {
+                ret.push(line.substr(j, Math.min(jsm.COLS, line.length - j)));
             }
         }
     }
     return ret;
-}
+};
 
 /**
  * Gets the canvas DOM ID based on the given index.
  */
-function getCanvasId(canvasIndex) {
+jsm.getCanvasId = function (canvasIndex) {
     return 'paper-canvas-' + (canvasIndex + 1);
-}
+};
 
 /**
  * Draws a footer line on each canvas.
  */
-function drawFooter(canvasElem, canvasIndex, numCanvas, fontFamily, textColor) {
+jsm.drawFooter = function(canvasElem, canvasIndex,
+                          numCanvas, fontFamily, textColor) {
     var ctx = canvasElem.getContext("2d");
     ctx.fillStyle = textColor;
     ctx.font = '10px ' + fontFamily;
     ctx.textBaseline = "top";
     ctx.fillText('第 ' + (canvasIndex + 1) + ' 页  共 ' + numCanvas + ' 页',
-                 FOOTER_POSITION,
-                 CANVAS_HEIGHT - FOOTER_HEIGHT);
-}
+                 jsm.FOOTER_POSITION,
+                 jsm.CANVAS_HEIGHT - jsm.FOOTER_HEIGHT);
+};
 
 /**
  * Draws a single character onto the canvas.
  */
-function drawChar(c, canvasElem, fontFamily, textColor, row, col) {
+jsm.drawChar = function (c, canvasElem, fontFamily, textColor, row, col) {
     var ctx = canvasElem.getContext("2d");
     ctx.fillStyle = textColor;
     ctx.font = '20px ' + fontFamily;
     ctx.textBaseline = "top";
     ctx.fillText(c,
-                 PADDING + col * GRID_WIDTH + 10,
-                 PADDING + row * LINE_HEIGHT + LINE_HEIGHT - GRID_HEIGHT + 10);
-}
+                 jsm.PADDING + col * jsm.GRID_WIDTH + 10,
+                 jsm.PADDING + row * jsm.LINE_HEIGHT +
+                 jsm.LINE_HEIGHT - jsm.GRID_HEIGHT + 10);
+};
 
 /**
  * Draws the text onto the canvases.
  */
-function drawText(lines, fontFamily, textColor) {
+jsm.drawText = function(lines, fontFamily, textColor) {
     var canvasIndex = 0;
-    for (let i = 0; i < lines.length; i += ROWS) {
-        var x = getCanvasId(canvasIndex);
-        var canvasElem = document.getElementById(getCanvasId(canvasIndex));
-        for (let row = 0; row < Math.min(ROWS, lines.length - i); row++) {
+    for (let i = 0; i < lines.length; i += jsm.ROWS) {
+        var x = jsm.getCanvasId(canvasIndex);
+        var canvasElem = document.getElementById(jsm.getCanvasId(canvasIndex));
+        for (let row = 0; row < Math.min(jsm.ROWS, lines.length - i); row++) {
             let line = lines[i + row];
             for (let col = 0; col < line.length; col++) {
-                drawChar(line[col],
-                         canvasElem,
-                         fontFamily,
-                         textColor,
-                         row,
-                         col);
+                jsm.drawChar(line[col],
+                             canvasElem,
+                             fontFamily,
+                             textColor,
+                             row,
+                             col);
             }
         }
         canvasIndex++;
     }
-}
+};
 
 /**
  * Formats the input text and renders one or more canvases.
@@ -168,37 +319,152 @@ function drawText(lines, fontFamily, textColor) {
  *     style.
  * @param {string=} gridColor The color string for setting the grid style.
  */
-function JsManuscriptFormatText(text,
-                                containerElem,
-                                fontFamily = 'sans-serif',
-                                textColor = '#000',
-                                paperColor = '#fff',
-                                gridColor = '#3C3') {
+jsm.formatText = function (text,
+                           containerElem,
+                           fontFamily = 'sans-serif',
+                           textColor = '#000',
+                           paperColor = '#fff',
+                           gridColor = '#3C3') {
     while (containerElem.firstChild) {
         containerElem.removeChild(containerElem.firstChild);
     }
-    var processedText = preprocessText(text);
-    var lines = splitLines(processedText);
+    var processedText = jsm.preprocessText(text);
+    var lines = jsm.splitLines(processedText);
     if (lines.length <= 0) {
         lines = [''];
     }
     fontFamily = fontFamily.trim();
     if (fontFamily === '')
         fontFamily = 'sans-serif';
-    var numCanvas = Math.ceil(lines.length / ROWS);
-    for (let i = 0; i < numCanvas; i++) {
-        var canvasId = getCanvasId(i);
+    jsm.numCanvas = Math.ceil(lines.length / jsm.ROWS);
+    for (let i = 0; i < jsm.numCanvas; i++) {
+        var canvasId = jsm.getCanvasId(i);
         containerElem.insertAdjacentHTML(
             'beforeend',
             '<canvas id="' + canvasId +
                 '" class="paper-canvas" ' +
-                'width="' + CANVAS_WIDTH +
-                '" height="' + CANVAS_HEIGHT +
+                'width="' + jsm.CANVAS_WIDTH +
+                '" height="' + jsm.CANVAS_HEIGHT +
                 '"></canvas>');
         var canvasElem = document.getElementById(canvasId);
         canvasElem.style.backgroundColor = paperColor;
-        drawGrids(canvasElem, paperColor, gridColor);
-        drawFooter(canvasElem, i, numCanvas, fontFamily, textColor);
+        jsm.drawGrids(canvasElem, paperColor, gridColor);
+        jsm.drawFooter(canvasElem, i, jsm.numCanvas, fontFamily, textColor);
     }
-    drawText(lines, fontFamily, textColor);
-}
+    jsm.drawText(lines, fontFamily, textColor);
+};
+
+jsm.format = function () {
+    var text = document.getElementById('input-text').value;
+    var fontIndex = parseInt(document.getElementById('font-select').value);
+    var fontFamily = jsm.FONTS[fontIndex].family;
+    var textColor = document.getElementById('text-color').value;
+    var paperColor = document.getElementById('paper-color').value;
+    var gridColor = document.getElementById('grid-color').value;
+    jsm.formatText(text,
+                   document.getElementById('paper-container'),
+                   fontFamily,
+                   textColor,
+                   paperColor,
+                   gridColor);
+
+    jsm.isEditing = false;
+    jsm.updateElements();
+};
+
+/**
+ * Checks exsiting Chinese font families and initializes the font select control.
+ */
+jsm.initFontList = function() {
+    window.setTimeout(function() {
+        var fontDetect = new FontDetect();
+        var selectElem = document.getElementById('font-select');
+        selectElem.innerHTML = '';
+        for (let i = 0; i < jsm.FONTS.length; i++) {
+            let fontInfo = jsm.FONTS[i];
+            if (fontInfo.family) {
+                if (fontDetect.isInstalled(fontInfo.family)) {
+                    let optionElem = document.createElement('option');
+                    optionElem.setAttribute('value', i);
+                    optionElem.innerText = fontInfo.name;
+                    selectElem.appendChild(optionElem);
+                }
+            }
+        }
+    }, 1);
+};
+
+/**
+ * Initializes event listeners.
+ */
+jsm.initEventListeners = function () {
+    document.getElementById('btn-format').addEventListener('click',
+                                                           jsm.format);
+    document.getElementById('btn-input').addEventListener('click',
+                                                          jsm.switchToInput);
+    document.getElementById('btn-print').addEventListener('click',
+                                                          jsm.print);
+    document.getElementById('btn-export').addEventListener('click',
+                                                           jsm.export);
+};
+
+/**
+ * Updates the visibility of UI elements, or enables them by the
+ * current status of jsm.isEditing.
+ */
+jsm.updateElements = function () {
+    document.getElementById('text-container').style.display =
+        jsm.isEditing ? 'block' : 'none';
+    document.getElementById('paper-container').style.display =
+        jsm.isEditing ? 'none' : 'block';
+
+    if (jsm.isEditing) {
+        document.getElementById('input-text').focus();
+        document.getElementById('btn-input').setAttribute('disabled',
+                                                          'disabled');
+        document.getElementById('btn-print').setAttribute('disabled',
+                                                          'disabled');
+        document.getElementById('btn-export').setAttribute('disabled',
+                                                           'disabled');
+        document.getElementById('page-select').setAttribute('disabled',
+                                                            'disabled');
+    } else {
+        document.getElementById('page-select').removeAttribute('disabled');
+        document.getElementById('btn-input').removeAttribute('disabled');
+        document.getElementById('btn-print').removeAttribute('disabled');
+        document.getElementById('btn-export').removeAttribute('disabled');
+
+        if (jsm.numCanvas > 0) {
+            var selectElem = document.getElementById('page-select');
+            selectElem.innerHTML = '';
+            for (let i = 0; i < jsm.numCanvas; i++) {
+                let optionElem = document.createElement('option');
+                optionElem.setAttribute('value', i);
+                optionElem.innerText = '' + (i + 1);
+                selectElem.appendChild(optionElem);
+            }
+        }
+    }
+};
+
+jsm.switchToInput = function () {
+    jsm.isEditing = true;
+    jsm.updateElements();
+};
+
+jsm.print = function () {
+    window.print();
+};
+
+jsm.export = function () {
+};
+
+/**
+ * Initializes input controls and event listeners.
+ */
+jsm.init = function () {
+    jsm.initFontList();
+    jsm.initEventListeners();
+    jsm.isEditing = true;
+    jsm.updateElements();
+};
