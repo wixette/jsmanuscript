@@ -22,20 +22,21 @@ var jsm = jsm || {};
 /**
  * Constant variables to format the canvas.
  */
-jsm.CANVAS_WIDTH = 1920;
-jsm.CANVAS_HEIGHT = 2560;
+jsm.CANVAS_WIDTH = 1920; /* 80 * 20 + 2 * 160 */
+jsm.CANVAS_HEIGHT = 2592; /* 80 * 20 + 32 * 21 + 2 * 160 */
+jsm.MARGIN = 160;
 jsm.ROWS = 20;
 jsm.COLS = 20;
-jsm.PADDING = 160;
-jsm.GRID_WIDTH = 80;
-jsm.GRID_HEIGHT = 80;
+jsm.SQUARE_WIDTH = 80;
+jsm.SQUARE_HEIGHT = 80;
+jsm.SQUARE_SPACE = 32;
+jsm.BORDER_STROKE = 4;
 jsm.LINE_STROKE = 2;
 jsm.FONT_SIZE = '50px';
-jsm.GRID_LEFT_PADDING = 15;
-jsm.LINE_HEIGHT = 112;
-jsm.FOOTER_POSITION = 1600;
-jsm.FOOTER_HEIGHT = 80;
-jsm.FOOTER_FONT_SIZE = '30px';
+jsm.CHAR_LEFT_PADDING = 15;
+jsm.FOOTER_POSITION = 1500;
+jsm.FOOTER_HEIGHT = 110;
+jsm.FOOTER_FONT_SIZE = '36px';
 
 jsm.DEFAULT_FONT = "sans-serif";
 
@@ -200,36 +201,42 @@ jsm.numCanvas = 0;
 /**
  * Draws the grid lines.
  */
-jsm.drawGrids = function(canvasElem, paperColor, gridColor) {
+jsm.drawGrid = function(canvasElem, paperColor, gridColor) {
     var ctx = canvasElem.getContext("2d");
     ctx.fillStyle = paperColor;
     ctx.fillRect(0, 0, jsm.CANVAS_WIDTH, jsm.CANVAS_HEIGHT);
 
     ctx.strokeStyle = gridColor;
     ctx.lineWidth = jsm.LINE_STROKE;
-
+    var lineHeight = jsm.SQUARE_HEIGHT + jsm.SQUARE_SPACE;
     for (let i = 0; i < jsm.ROWS; i++) {
-        ctx.moveTo(jsm.PADDING, jsm.PADDING + jsm.LINE_HEIGHT * i);
-        ctx.lineTo(jsm.CANVAS_WIDTH - jsm.PADDING,
-                   jsm.PADDING + jsm.LINE_HEIGHT * i);
-        ctx.moveTo(jsm.PADDING,
-                   jsm.PADDING + jsm.LINE_HEIGHT * i +
-                   jsm.LINE_HEIGHT - jsm.GRID_HEIGHT);
-        ctx.lineTo(jsm.CANVAS_WIDTH - jsm.PADDING,
-                   jsm.PADDING + jsm.LINE_HEIGHT * i +
-                   jsm.LINE_HEIGHT - jsm.GRID_HEIGHT);
+        ctx.moveTo(jsm.MARGIN, jsm.MARGIN + lineHeight * i);
+        ctx.lineTo(jsm.CANVAS_WIDTH - jsm.MARGIN,
+                   jsm.MARGIN + lineHeight * i);
+        ctx.moveTo(jsm.MARGIN,
+                   jsm.MARGIN + lineHeight * i +
+                   lineHeight - jsm.SQUARE_HEIGHT);
+        ctx.lineTo(jsm.CANVAS_WIDTH - jsm.MARGIN,
+                   jsm.MARGIN + lineHeight * i +
+                   lineHeight - jsm.SQUARE_HEIGHT);
         for (let j = 1; j < jsm.COLS; j++) {
-            ctx.moveTo(jsm.PADDING + j * jsm.GRID_WIDTH,
-                       jsm.PADDING + jsm.LINE_HEIGHT * i +
-                       jsm.LINE_HEIGHT - jsm.GRID_HEIGHT);
-            ctx.lineTo(jsm.PADDING + j * jsm.GRID_WIDTH,
-                       jsm.PADDING + jsm.LINE_HEIGHT * i + jsm.LINE_HEIGHT);
+            ctx.moveTo(jsm.MARGIN + j * jsm.SQUARE_WIDTH,
+                       jsm.MARGIN + lineHeight * i +
+                       lineHeight - jsm.SQUARE_HEIGHT);
+            ctx.lineTo(jsm.MARGIN + j * jsm.SQUARE_WIDTH,
+                       jsm.MARGIN + lineHeight * i + lineHeight);
         }
     }
-    ctx.rect(jsm.PADDING, jsm.PADDING,
-             jsm.CANVAS_WIDTH - 2 * jsm.PADDING,
-             jsm.CANVAS_HEIGHT - 2 * jsm.PADDING);
+    ctx.moveTo(jsm.MARGIN, jsm.MARGIN + lineHeight * jsm.ROWS);
+    ctx.lineTo(jsm.CANVAS_WIDTH - jsm.MARGIN,
+               jsm.MARGIN + lineHeight * jsm.ROWS);
     ctx.stroke();
+
+    ctx.strokeStyle = gridColor;
+    ctx.lineWidth = jsm.BORDER_STROKE;
+    ctx.strokeRect(jsm.MARGIN, jsm.MARGIN,
+                   jsm.CANVAS_WIDTH - 2 * jsm.MARGIN,
+                   jsm.CANVAS_HEIGHT - 2 * jsm.MARGIN);
 };
 
 /**
@@ -282,11 +289,12 @@ jsm.getCanvasId = function (canvasIndex) {
  * Draws a footer line on each canvas.
  */
 jsm.drawFooter = function(canvasElem, canvasIndex,
-                          numCanvas, fontFamily, textColor) {
+                          numCanvas, fontFamily,
+                          gridColor, textColor) {
     var ctx = canvasElem.getContext("2d");
-    ctx.fillStyle = textColor;
+    ctx.fillStyle = gridColor;
     ctx.font = jsm.FOOTER_FONT_SIZE + ' ' + fontFamily;
-    ctx.textBaseline = "top";
+    ctx.textBaseline = "middle";
     ctx.fillText('第 ' + (canvasIndex + 1) + ' 页  共 ' + numCanvas + ' 页',
                  jsm.FOOTER_POSITION,
                  jsm.CANVAS_HEIGHT - jsm.FOOTER_HEIGHT);
@@ -300,10 +308,11 @@ jsm.drawChar = function (c, canvasElem, fontFamily, textColor, row, col) {
     ctx.fillStyle = textColor;
     ctx.font = jsm.FONT_SIZE + ' '+ fontFamily;
     ctx.textBaseline = "middle";
+    var lineHeight = jsm.SQUARE_HEIGHT + jsm.SQUARE_SPACE;
     ctx.fillText(c,
-                 jsm.PADDING + col * jsm.GRID_WIDTH + jsm.GRID_LEFT_PADDING,
-                 jsm.PADDING + row * jsm.LINE_HEIGHT +
-                 jsm.LINE_HEIGHT - jsm.GRID_HEIGHT / 2);
+                 jsm.MARGIN + col * jsm.SQUARE_WIDTH + jsm.CHAR_LEFT_PADDING,
+                 jsm.MARGIN + row * lineHeight +
+                 lineHeight - jsm.SQUARE_HEIGHT / 2);
 };
 
 /**
@@ -370,8 +379,9 @@ jsm.formatText = function (text,
                 '"></canvas>');
         var canvasElem = document.getElementById(canvasId);
         canvasElem.style.backgroundColor = paperColor;
-        jsm.drawGrids(canvasElem, paperColor, gridColor);
-        jsm.drawFooter(canvasElem, i, jsm.numCanvas, fontFamily, textColor);
+        jsm.drawGrid(canvasElem, paperColor, gridColor);
+        jsm.drawFooter(canvasElem, i, jsm.numCanvas, fontFamily,
+                       gridColor, textColor);
     }
     jsm.drawText(lines, fontFamily, textColor);
 };
