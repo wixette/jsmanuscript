@@ -129,6 +129,12 @@ div, img {
     width: 100%;
 }
 
+.paper-canvas {
+    border: #57c 1px solid;
+    box-shadow: 1px 1px 3px #ccc;
+    width:100%;
+}
+
 #footer {
     color: #666;
     line-height: 30px;

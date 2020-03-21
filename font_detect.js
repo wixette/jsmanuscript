@@ -2,7 +2,7 @@
  * @fileoverview Util to detect if one or more fonts are installed.
  */
 
-class FontDetect {
+class FontDetector {
     /**
      * Initializes the instance of the detector. The function
      * isInstalled() of the instance can be invoked for multiple times
@@ -17,7 +17,7 @@ class FontDetect {
 
     createRulers_(sampleText) {
         var elems = [];
-        for (const font of FontDetect.RULER_FONTS.values()) {
+        for (const font of FontDetector.RULER_FONTS.values()) {
             let rulerElem = document.createElement('div');
             rulerElem.style.position = 'absolute';
             rulerElem.style.zIndex = '-999';
@@ -68,7 +68,7 @@ class FontDetect {
     }
 }
 
-FontDetect.RULER_FONTS = [
+FontDetector.RULER_FONTS = [
     "monospace",
     "sans-serif",
     "serif",

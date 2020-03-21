@@ -22,16 +22,19 @@ var jsm = jsm || {};
 /**
  * Constant variables to format the canvas.
  */
-jsm.CANVAS_WIDTH = 960;
-jsm.CANVAS_HEIGHT = 1280;
+jsm.CANVAS_WIDTH = 1920;
+jsm.CANVAS_HEIGHT = 2560;
 jsm.ROWS = 20;
 jsm.COLS = 20;
-jsm.PADDING = 80;
-jsm.GRID_WIDTH = 40;
-jsm.GRID_HEIGHT = 40;
-jsm.LINE_HEIGHT = 56;
-jsm.FOOTER_POSITION = 800;
-jsm.FOOTER_HEIGHT = 40;
+jsm.PADDING = 160;
+jsm.GRID_WIDTH = 80;
+jsm.GRID_HEIGHT = 80;
+jsm.LINE_STROKE = 2;
+jsm.FONT_SIZE = '50px';
+jsm.LINE_HEIGHT = 112;
+jsm.FOOTER_POSITION = 1600;
+jsm.FOOTER_HEIGHT = 80;
+jsm.FOOTER_FONT_SIZE = '30px';
 
 /**
  * Candidate list of font familiy and display name.
@@ -184,7 +187,7 @@ jsm.drawGrids = function(canvasElem, paperColor, gridColor) {
     ctx.fillRect(0, 0, jsm.CANVAS_WIDTH, jsm.CANVAS_HEIGHT);
 
     ctx.strokeStyle = gridColor;
-    ctx.lineWidth = 1;
+    ctx.lineWidth = jsm.LINE_STROKE;
 
     for (let i = 0; i < jsm.ROWS; i++) {
         ctx.moveTo(jsm.PADDING, jsm.PADDING + jsm.LINE_HEIGHT * i);
@@ -263,7 +266,7 @@ jsm.drawFooter = function(canvasElem, canvasIndex,
                           numCanvas, fontFamily, textColor) {
     var ctx = canvasElem.getContext("2d");
     ctx.fillStyle = textColor;
-    ctx.font = '10px ' + fontFamily;
+    ctx.font = jsm.FOOTER_FONT_SIZE + ' ' + fontFamily;
     ctx.textBaseline = "top";
     ctx.fillText('第 ' + (canvasIndex + 1) + ' 页  共 ' + numCanvas + ' 页',
                  jsm.FOOTER_POSITION,
@@ -276,7 +279,7 @@ jsm.drawFooter = function(canvasElem, canvasIndex,
 jsm.drawChar = function (c, canvasElem, fontFamily, textColor, row, col) {
     var ctx = canvasElem.getContext("2d");
     ctx.fillStyle = textColor;
-    ctx.font = '20px ' + fontFamily;
+    ctx.font = jsm.FONT_SIZE + ' '+ fontFamily;
     ctx.textBaseline = "top";
     ctx.fillText(c,
                  jsm.PADDING + col * jsm.GRID_WIDTH + 10,
@@ -367,7 +370,6 @@ jsm.format = function () {
                    textColor,
                    paperColor,
                    gridColor);
-
     jsm.isEditing = false;
     jsm.updateElements();
 };
@@ -377,13 +379,13 @@ jsm.format = function () {
  */
 jsm.initFontList = function() {
     window.setTimeout(function() {
-        var fontDetect = new FontDetect();
+        var fontDetector = new FontDetector();
         var selectElem = document.getElementById('font-select');
         selectElem.innerHTML = '';
         for (let i = 0; i < jsm.FONTS.length; i++) {
             let fontInfo = jsm.FONTS[i];
             if (fontInfo.family) {
-                if (fontDetect.isInstalled(fontInfo.family)) {
+                if (fontDetector.isInstalled(fontInfo.family)) {
                     let optionElem = document.createElement('option');
                     optionElem.setAttribute('value', i);
                     optionElem.innerText = fontInfo.name;
