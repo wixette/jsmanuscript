@@ -22,23 +22,23 @@ var jsm = jsm || {};
 /**
  * Constant variables to format the canvas.
  */
-jsm.CANVAS_WIDTH = 1920; /* 80 * 20 + 2 * 160 */
-jsm.CANVAS_HEIGHT = 2592; /* 80 * 20 + 32 * 21 + 2 * 160 */
 jsm.MARGIN = 160;
 jsm.ROWS = 20;
 jsm.COLS = 20;
 jsm.SQUARE_WIDTH = 80;
-jsm.SQUARE_HEIGHT = 80;
-jsm.SQUARE_SPACE = 32;
-jsm.BORDER_STROKE = 4;
-jsm.LINE_STROKE = 2;
-jsm.DASH_LINE_SEGMENT_LENGTH = 5;
-jsm.DASH_LINE_SPACE_LENGTH = 3;
-jsm.FONT_SIZE = '50px';
-jsm.CHAR_LEFT_PADDING = 15;
-jsm.FOOTER_POSITION = 1500;
-jsm.FOOTER_HEIGHT = 110;
-jsm.FOOTER_FONT_SIZE = '36px';
+jsm.BORDER_STROKE = 4;  // width of the border lines
+jsm.LINE_STROKE = 2;  // width of the inner lines
+jsm.SQUARE_HEIGHT = jsm.SQUARE_WIDTH;
+jsm.SQUARE_SPACE = jsm.SQUARE_HEIGHT * 4/10;  // spacing between lines
+jsm.DASH_LINE_SEGMENT_LENGTH = jsm.SQUARE_WIDTH * 5/80;
+jsm.DASH_LINE_SPACE_LENGTH = jsm.SQUARE_WIDTH * 3/80;
+jsm.FONT_SIZE = jsm.SQUARE_WIDTH * 5/8;
+jsm.CHAR_LEFT_PADDING = (jsm.SQUARE_WIDTH - jsm.FONT_SIZE)/2;
+jsm.CANVAS_WIDTH = jsm.COLS * jsm.SQUARE_WIDTH + 2 * jsm.MARGIN;
+jsm.CANVAS_HEIGHT = jsm.ROWS * jsm.SQUARE_HEIGHT + (jsm.ROWS + 1) * jsm.SQUARE_SPACE + 2 * jsm.MARGIN;
+jsm.FOOTER_FONT_SIZE = jsm.SQUARE_WIDTH * 9/20;
+jsm.FOOTER_X_POSITION = jsm.CANVAS_WIDTH - jsm.MARGIN - jsm.FOOTER_FONT_SIZE * 7;
+jsm.FOOTER_FROM_BOTTOM = jsm.MARGIN * 11/16;
 
 jsm.DEFAULT_FONT = "sans-serif";
 
@@ -324,11 +324,11 @@ jsm.drawFooter = function(canvasElem, canvasIndex,
                           gridColor, textColor) {
     var ctx = canvasElem.getContext("2d");
     ctx.fillStyle = gridColor;
-    ctx.font = jsm.FOOTER_FONT_SIZE + ' ' + fontFamily;
+    ctx.font = jsm.FOOTER_FONT_SIZE + 'px ' + fontFamily;
     ctx.textBaseline = "middle";
     ctx.fillText('第 ' + (canvasIndex + 1) + ' 页  共 ' + numCanvas + ' 页',
-                 jsm.FOOTER_POSITION,
-                 jsm.CANVAS_HEIGHT - jsm.FOOTER_HEIGHT);
+                 jsm.FOOTER_X_POSITION,
+                 jsm.CANVAS_HEIGHT - jsm.FOOTER_FROM_BOTTOM);
 };
 
 /**
@@ -337,7 +337,7 @@ jsm.drawFooter = function(canvasElem, canvasIndex,
 jsm.drawChar = function (c, canvasElem, fontFamily, textColor, row, col) {
     var ctx = canvasElem.getContext("2d");
     ctx.fillStyle = textColor;
-    ctx.font = jsm.FONT_SIZE + ' '+ fontFamily;
+    ctx.font = jsm.FONT_SIZE + 'px '+ fontFamily;
     ctx.textBaseline = "middle";
     var lineHeight = jsm.SQUARE_HEIGHT + jsm.SQUARE_SPACE;
     ctx.fillText(c,
