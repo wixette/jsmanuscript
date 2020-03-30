@@ -22,21 +22,23 @@ var jsm = jsm || {};
 /**
  * Constant variables to format the canvas.
  */
-jsm.CANVAS_WIDTH = 1920; /* 80 * 20 + 2 * 160 */
-jsm.CANVAS_HEIGHT = 2592; /* 80 * 20 + 32 * 21 + 2 * 160 */
 jsm.MARGIN = 160;
 jsm.ROWS = 20;
 jsm.COLS = 20;
 jsm.SQUARE_WIDTH = 80;
-jsm.SQUARE_HEIGHT = 80;
-jsm.SQUARE_SPACE = 32;
-jsm.BORDER_STROKE = 4;
-jsm.LINE_STROKE = 2;
-jsm.FONT_SIZE = '50px';
-jsm.CHAR_LEFT_PADDING = 15;
-jsm.FOOTER_POSITION = 1500;
-jsm.FOOTER_HEIGHT = 110;
-jsm.FOOTER_FONT_SIZE = '36px';
+jsm.BORDER_STROKE = 4;  // width of the border lines
+jsm.LINE_STROKE = 2;  // width of the inner lines
+jsm.SQUARE_HEIGHT = jsm.SQUARE_WIDTH;
+jsm.SQUARE_SPACE = jsm.SQUARE_HEIGHT * 4/10;  // spacing between lines
+jsm.DASH_LINE_SEGMENT_LENGTH = jsm.SQUARE_WIDTH * 5/80;
+jsm.DASH_LINE_SPACE_LENGTH = jsm.SQUARE_WIDTH * 3/80;
+jsm.FONT_SIZE = jsm.SQUARE_WIDTH * 5/8;
+jsm.CHAR_LEFT_PADDING = (jsm.SQUARE_WIDTH - jsm.FONT_SIZE)/2;
+jsm.CANVAS_WIDTH = jsm.COLS * jsm.SQUARE_WIDTH + 2 * jsm.MARGIN;
+jsm.CANVAS_HEIGHT = jsm.ROWS * jsm.SQUARE_HEIGHT + (jsm.ROWS + 1) * jsm.SQUARE_SPACE + 2 * jsm.MARGIN;
+jsm.FOOTER_FONT_SIZE = jsm.SQUARE_WIDTH * 9/20;
+jsm.FOOTER_X_POSITION = jsm.CANVAS_WIDTH - jsm.MARGIN - jsm.FOOTER_FONT_SIZE * 7;
+jsm.FOOTER_FROM_BOTTOM = jsm.MARGIN * 11/16;
 
 jsm.DEFAULT_FONT = "sans-serif";
 
@@ -201,7 +203,7 @@ jsm.numCanvas = 0;
 /**
  * Draws the grid lines.
  */
-jsm.drawGrid = function(canvasElem, paperColor, gridColor) {
+jsm.drawGrid = function(canvasElem, paperColor, gridColor, gridPattern) {
     var ctx = canvasElem.getContext("2d");
     ctx.fillStyle = paperColor;
     ctx.fillRect(0, 0, jsm.CANVAS_WIDTH, jsm.CANVAS_HEIGHT);
@@ -219,12 +221,41 @@ jsm.drawGrid = function(canvasElem, paperColor, gridColor) {
         ctx.lineTo(jsm.CANVAS_WIDTH - jsm.MARGIN,
                    jsm.MARGIN + lineHeight * i +
                    lineHeight - jsm.SQUARE_HEIGHT);
-        for (let j = 1; j < jsm.COLS; j++) {
-            ctx.moveTo(jsm.MARGIN + j * jsm.SQUARE_WIDTH,
-                       jsm.MARGIN + lineHeight * i +
-                       lineHeight - jsm.SQUARE_HEIGHT);
-            ctx.lineTo(jsm.MARGIN + j * jsm.SQUARE_WIDTH,
-                       jsm.MARGIN + lineHeight * i + lineHeight);
+        for (let j = 0; j < jsm.COLS; j++) {
+            // Draw the left edge of the bounding box.
+            var left = jsm.MARGIN + j * jsm.SQUARE_WIDTH;
+            var bottom = jsm.MARGIN + lineHeight * i + lineHeight;
+            ctx.moveTo(left, bottom - jsm.SQUARE_HEIGHT);
+            ctx.lineTo(left, bottom);
+            ctx.stroke();
+
+            if (gridPattern == '田' || gridPattern == '米') {
+                // Switch to dash lines.
+                ctx.beginPath();
+                ctx.setLineDash([jsm.DASH_LINE_SEGMENT_LENGTH, jsm.DASH_LINE_SPACE_LENGTH]);
+
+                // Draw the vertical line in the middle of the bounding box.
+                ctx.moveTo(left + jsm.SQUARE_WIDTH/2, bottom - jsm.SQUARE_HEIGHT);
+                ctx.lineTo(left + jsm.SQUARE_WIDTH/2, bottom);
+
+                // Draw the horizontal line in the middle of the bounding box.
+                ctx.moveTo(left, bottom - jsm.SQUARE_HEIGHT/2);
+                ctx.lineTo(left + jsm.SQUARE_WIDTH, bottom - jsm.SQUARE_HEIGHT/2);
+
+                if (gridPattern == '米') {
+                    // Draw the diagonal lines of the bounding box.
+                    ctx.moveTo(left, bottom - jsm.SQUARE_HEIGHT);
+                    ctx.lineTo(left + jsm.SQUARE_WIDTH, bottom);
+                    ctx.moveTo(left, bottom);
+                    ctx.lineTo(left + jsm.SQUARE_WIDTH, bottom - jsm.SQUARE_HEIGHT);
+                }
+
+                ctx.stroke();
+
+                // Switch back to solid lines.
+                ctx.beginPath();
+                ctx.setLineDash([]);
+            }
         }
     }
     ctx.moveTo(jsm.MARGIN, jsm.MARGIN + lineHeight * jsm.ROWS);
@@ -293,11 +324,11 @@ jsm.drawFooter = function(canvasElem, canvasIndex,
                           gridColor, textColor) {
     var ctx = canvasElem.getContext("2d");
     ctx.fillStyle = gridColor;
-    ctx.font = jsm.FOOTER_FONT_SIZE + ' ' + fontFamily;
+    ctx.font = jsm.FOOTER_FONT_SIZE + 'px ' + fontFamily;
     ctx.textBaseline = "middle";
     ctx.fillText('第 ' + (canvasIndex + 1) + ' 页  共 ' + numCanvas + ' 页',
-                 jsm.FOOTER_POSITION,
-                 jsm.CANVAS_HEIGHT - jsm.FOOTER_HEIGHT);
+                 jsm.FOOTER_X_POSITION,
+                 jsm.CANVAS_HEIGHT - jsm.FOOTER_FROM_BOTTOM);
 };
 
 /**
@@ -306,7 +337,7 @@ jsm.drawFooter = function(canvasElem, canvasIndex,
 jsm.drawChar = function (c, canvasElem, fontFamily, textColor, row, col) {
     var ctx = canvasElem.getContext("2d");
     ctx.fillStyle = textColor;
-    ctx.font = jsm.FONT_SIZE + ' '+ fontFamily;
+    ctx.font = jsm.FONT_SIZE + 'px '+ fontFamily;
     ctx.textBaseline = "middle";
     var lineHeight = jsm.SQUARE_HEIGHT + jsm.SQUARE_SPACE;
     ctx.fillText(c,
@@ -355,7 +386,8 @@ jsm.formatText = function (text,
                            fontFamily = 'sans-serif',
                            textColor = '#000',
                            paperColor = '#fff',
-                           gridColor = '#3C3') {
+                           gridColor = '#3C3',
+                           gridPattern = '口') {
     while (containerElem.firstChild) {
         containerElem.removeChild(containerElem.firstChild);
     }
@@ -379,7 +411,7 @@ jsm.formatText = function (text,
                 '"></canvas>');
         var canvasElem = document.getElementById(canvasId);
         canvasElem.style.backgroundColor = paperColor;
-        jsm.drawGrid(canvasElem, paperColor, gridColor);
+        jsm.drawGrid(canvasElem, paperColor, gridColor, gridPattern);
         jsm.drawFooter(canvasElem, i, jsm.numCanvas, fontFamily,
                        gridColor, textColor);
     }
@@ -395,12 +427,14 @@ jsm.format = function () {
     var textColor = document.getElementById('text-color').value;
     var paperColor = document.getElementById('paper-color').value;
     var gridColor = document.getElementById('grid-color').value;
+    var gridPattern = document.getElementById('grid-pattern').value;
     jsm.formatText(text,
                    document.getElementById('paper-container'),
                    fontFamily,
                    textColor,
                    paperColor,
-                   gridColor);
+                   gridColor,
+                   gridPattern);
     jsm.isEditing = false;
     jsm.updateElements();
 };
