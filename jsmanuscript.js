@@ -32,8 +32,7 @@ jsm.SQUARE_HEIGHT = jsm.SQUARE_WIDTH;
 jsm.SQUARE_SPACE = jsm.SQUARE_HEIGHT * 4/10;  // spacing between lines
 jsm.DASH_LINE_SEGMENT_LENGTH = jsm.SQUARE_WIDTH * 5/80;
 jsm.DASH_LINE_SPACE_LENGTH = jsm.SQUARE_WIDTH * 3/80;
-jsm.FONT_SIZE = jsm.SQUARE_WIDTH * 5/8;
-jsm.CHAR_LEFT_PADDING = (jsm.SQUARE_WIDTH - jsm.FONT_SIZE)/2;
+jsm.DEFAULT_FONT_SIZE = jsm.SQUARE_WIDTH * 5/8;
 jsm.CANVAS_WIDTH = jsm.COLS * jsm.SQUARE_WIDTH + 2 * jsm.MARGIN;
 jsm.CANVAS_HEIGHT = jsm.ROWS * jsm.SQUARE_HEIGHT + (jsm.ROWS + 1) * jsm.SQUARE_SPACE + 2 * jsm.MARGIN;
 jsm.FOOTER_FONT_SIZE = jsm.SQUARE_WIDTH * 9/20;
@@ -334,14 +333,17 @@ jsm.drawFooter = function(canvasElem, canvasIndex,
 /**
  * Draws a single character onto the canvas.
  */
-jsm.drawChar = function (c, canvasElem, fontFamily, textColor, row, col) {
+jsm.drawChar = function (c, canvasElem, fontFamily, textSize, textColor, row, col) {
     var ctx = canvasElem.getContext("2d");
     ctx.fillStyle = textColor;
-    ctx.font = jsm.FONT_SIZE + 'px '+ fontFamily;
+    var fontSize = Math.round(jsm.DEFAULT_FONT_SIZE * (textSize == '小' ? 0.8 :
+                                                       textSize == '中' ? 1 : 1.4));
+    ctx.font = fontSize + 'px '+ fontFamily;
     ctx.textBaseline = "middle";
     var lineHeight = jsm.SQUARE_HEIGHT + jsm.SQUARE_SPACE;
+    var leftPadding = (jsm.SQUARE_WIDTH - fontSize)/2;
     ctx.fillText(c,
-                 jsm.MARGIN + col * jsm.SQUARE_WIDTH + jsm.CHAR_LEFT_PADDING,
+                 jsm.MARGIN + col * jsm.SQUARE_WIDTH + leftPadding,
                  jsm.MARGIN + row * lineHeight +
                  lineHeight - jsm.SQUARE_HEIGHT / 2);
 };
@@ -349,7 +351,7 @@ jsm.drawChar = function (c, canvasElem, fontFamily, textColor, row, col) {
 /**
  * Draws the text onto the canvases.
  */
-jsm.drawText = function(lines, fontFamily, textColor) {
+jsm.drawText = function(lines, fontFamily, textSize, textColor) {
     var canvasIndex = 0;
     for (let i = 0; i < lines.length; i += jsm.ROWS) {
         var x = jsm.getCanvasId(canvasIndex);
@@ -360,6 +362,7 @@ jsm.drawText = function(lines, fontFamily, textColor) {
                 jsm.drawChar(line[col],
                              canvasElem,
                              fontFamily,
+                             textSize,
                              textColor,
                              row,
                              col);
@@ -384,6 +387,7 @@ jsm.drawText = function(lines, fontFamily, textColor) {
 jsm.formatText = function (text,
                            containerElem,
                            fontFamily = 'sans-serif',
+                           textSize = '中',
                            textColor = '#000',
                            paperColor = '#fff',
                            gridColor = '#3C3',
@@ -415,7 +419,7 @@ jsm.formatText = function (text,
         jsm.drawFooter(canvasElem, i, jsm.numCanvas, fontFamily,
                        gridColor, textColor);
     }
-    jsm.drawText(lines, fontFamily, textColor);
+    jsm.drawText(lines, fontFamily, textSize, textColor);
 };
 
 jsm.format = function () {
@@ -424,6 +428,7 @@ jsm.format = function () {
     var fontFamily = isNaN(fontIndex) ?
         jsm.DEFAULT_FONT :
         jsm.FONTS[fontIndex].family;
+    var textSize = document.getElementById('text-size').value;
     var textColor = document.getElementById('text-color').value;
     var paperColor = document.getElementById('paper-color').value;
     var gridColor = document.getElementById('grid-color').value;
@@ -431,6 +436,7 @@ jsm.format = function () {
     jsm.formatText(text,
                    document.getElementById('paper-container'),
                    fontFamily,
+                   textSize,
                    textColor,
                    paperColor,
                    gridColor,
